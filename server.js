@@ -1,8 +1,13 @@
-import express from "express";
-const app = express();
-const PORT = process.env.PORT || 8080;
+import pkg from "pg";
+const { Pool } = pkg;
 
-app.get("/health", (_req, res) => res.send("OK"));
-app.get("/", (_req, res) => res.send("SIGMA-E rodando no Cloud Run 🚀"));
+// pegue do Cloud Run → Variáveis de ambiente do sigmae-api
+const pool = new Pool({
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,   // pode ser IP público ou socket (ver nota abaixo)
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT || 5432,
+});
 
-app.listen(PORT, () => console.log("API on port", PORT));
+export default pool;
